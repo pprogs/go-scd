@@ -1,0 +1,82 @@
+{
+  "rules": [
+    {
+      "rule_name": "rest",
+      "rule_trigger": "git_hook",
+      "command_set": "rest",
+
+      "git_repo": "somegit/rest",
+      "git_branch": "refs/heads/dev"
+    }
+  ],
+
+  "commands": {
+    "rest": [
+      {
+        "type": "exec",
+        "descr": "Clear rest local repo",        
+        "cmdName": "rm",
+        "cmdArgs": ["-r","/proj/go/src/rest"]
+      },      
+      {
+        "type": "git",
+        "descr": "Pulling rest source from git",
+        "token": "token",
+        "remoteRepo": "git url",
+        "localRepo": "/proj/go/src/rest",
+        "branch": "master"
+      },
+      {
+        "type": "exec",
+        "descr": "Running DEP ENSURE on rest repo",
+        "workDir": "/proj/go/src/rest",
+        "cmdName": "dep",
+        "cmdArgs": ["ensure"]
+      },
+      {
+        "type": "exec",
+        "descr": "Running GO BUILD in rest folder",
+        "workDir": "/proj/go/src/rest",
+        "cmdName": "go",
+        "cmdArgs": ["build"]
+      },
+      {
+        "type": "exec",
+        "descr": "Stopping rest deamon",
+        "cmdName": "systemctl",
+        "cmdArgs": ["stop", "rest.service"]
+      },
+      {
+        "type": "exec",
+        "descr": "Running go-pgrun to update database",
+        "workDir": "/proj/go/src/go-pgrun",
+        "cmdName": "go-pgrun",
+        "cmdArgs": [
+          "-C",
+          "/proj/go/src/rest/pg/config.json",
+          "-D",
+          "/proj/go/src/rest/pg/update.sql"
+        ],
+        "if": [
+          {
+            "cond": "file exists",
+            "value": "/proj/go/src/rest/pg/update.sql"
+          }
+        ]
+      },
+      {
+        "type": "exec",
+        "descr": "Copy new service bin and cfg to run folder",
+        "workDir": "/proj/go/src/rest",
+        "cmdName": "cp",
+        "cmdArgs": ["-fu", "rest", "rest.config", "/proj/api"]
+      },
+      {
+        "type": "exec",
+        "descr": "start rest deamon",
+        "cmdName": "systemctl",
+        "cmdArgs": ["start", "rest.service"]
+      }
+    ]   
+  }
+}

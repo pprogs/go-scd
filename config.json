@@ -1,0 +1,5 @@
+{
+  "http_endpoint": "127.0.0.1:3002",
+  "git_webhook": "/get",  
+  "log_file": "/proj/log/go-scd.log"
+}
