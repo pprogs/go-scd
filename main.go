@@ -20,8 +20,8 @@ var (
 
 func main() {
 
-	confFlag := flag.String("C", "config.json", "Path to config json file")
-	rulesFlag := flag.String("R", "rules.json", "Path to rules json file")
+	confFlag := flag.String("c", "cd-config.json", "Path to config json file")
+	rulesFlag := flag.String("r", "cd-rules.json", "Path to rules json file")
 	flag.Parse()
 
 	if *confFlag == "" || *rulesFlag == "" {
