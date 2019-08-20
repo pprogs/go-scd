@@ -12,15 +12,15 @@ func execCommand(c *command) int {
 	cmd := exec.Command(c.CmdName, c.CmdArgs...)
 	cmd.Dir = c.WorkDir
 
-	var stdOut bytes.Buffer
-	var stdErr bytes.Buffer
+	var stdOut, stdErr bytes.Buffer
+
 	cmd.Stdout = &stdOut
 	cmd.Stderr = &stdErr
 
 	err := cmd.Run()
 
-	lg.Printf("stdErr: %v\n", stdErr.String())
-	lg.Printf("stdOut: %v\n", stdOut.String())
+	lg.Printf("stdErr: %s\n", stdErr.String())
+	lg.Printf("stdOut: %s\n", stdOut.String())
 
 	if ee, ok := err.(*exec.ExitError); ok {
 		lg.Printf("exec exit ERROR: %v\n", ee)
